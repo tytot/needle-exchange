@@ -1,32 +1,14 @@
 {
-  "urn": "urn:mediator:skeleton-production-mediator",
-  "version": "0.0.1",
-  "name": "Skeleton Production Bootstrap Mediator",
-  "description": "Skeleton Production Bootstrap Mediator",
-  "defaultChannelConfig": [
-    {
-      "name": "Production Bootstrap Test Route",
-      "urlPattern": "^/testEndpoint$",
-      "routes": [
-        {
-          "name": "Test Endpoint",
-          "host": "localhost",
-          "port": "4321",
-          "primary": true,
-          "type": "http"
-        }
-      ],
-      "allow": ["test"],
-      "methods": ["GET"],
-      "type": "http"
-    }
-  ],
+  "urn": "urn:mediator:needle-exchange",
+  "version": "1.0.0",
+  "name": "Needle Exchange Mediator",
+  "description": "An interactive needle exchange system featuring OpenHIM, OpenInfoMan, and RapidPro",
   "endpoints": [
     {
-      "name": "Production Bootstrap Test Endpoint",
+      "name": "Needle Exchange Endpoint",
       "host": "localhost",
-      "path": "/testEndpoint",
-      "port": "4321",
+      "path": "/needle",
+      "port": "3002",
       "primary": true,
       "type": "http"
     }

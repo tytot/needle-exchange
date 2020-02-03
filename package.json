@@ -1,7 +1,7 @@
 {
-  "name": "openhim-mediator-bootstrap-production",
-  "version": "0.0.1",
-  "description": "Basic OpenHIM skeleton mediator to create a production ready product",
+  "name": "needle-exchange-mediator",
+  "version": "1.0.0",
+  "description": "An interactive needle exchange system featuring OpenHIM, OpenInfoMan, and RapidPro",
   "dependencies": {
     "express": "^4.17.1",
     "openhim-mediator-utils": "^0.2.3",
@@ -26,15 +26,15 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "repository": "git@github.com:jembi/openhim-mediator-bootstrap-production.git",
+  "repository": "git@github.com:tytot/needle-exchange.git",
   "keywords": [
-    "openhim",
-    "mediator",
-    "production"
+    "needle",
+    "exchange",
+    "kevin love"
   ],
-  "author": "Jembi Health Systems NPC",
+  "author": "Tyler Lin",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jembi/openhim-mediator-bootstrap-production/issues"
+    "url": "https://github.com/tytot/needle-exchange/issues"
   }
 }

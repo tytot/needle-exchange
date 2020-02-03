@@ -1,6 +1,6 @@
 'use strict'
 
-export const SERVER_PORT = process.env.SERVER_PORT || 4321
+export const SERVER_PORT = 3002
 export const LOG_LEVEL = process.env.LOG_LEVEL || 'info'
 
 // OpenHIM
