@@ -3,12 +3,12 @@
 import express from 'express'
 
 import {buildReturnObject} from './utils'
-import testEndpoint from './testRoute'
+import endpoint from './endpoint'
 import logger from '../logger'
 
 const routes = express.Router()
 
-routes.get('/testEndpoint', testEndpoint)
+routes.get('/update', endpoint)
 // Add more routes here if needed
 
 // Any request regardless of request type or url path to the mediator port will be caught here
