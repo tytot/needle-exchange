@@ -1,17 +1,31 @@
 'use strict'
 
 import logger from '../logger'
-import {buildReturnObject} from './utils'
+import openinfoman from '../openinfoman'
+import openhim from '../openhim'
+import rapidpro from '../rapidpro'
+import adapter from '../adapter'
+import { buildReturnObject } from './utils'
+import async from 'async'
+import unique from 'array-unique'
 import XPath from 'xpath'
+import _ from 'underscore'
+import { DOMParser } from 'xmldom'
 
-module.exports = (_req, res) => {
+let config = {}
+import apiConf from '../config/config'
+import mediatorConfig from '../config/mediatorConfig'
+
+export function endpoint(_req, res) {
 
   logger.info('Update Triggered')
 
   const OIM = openinfoman(config.openinfoman)
+  const OpenHIM = openhim(apiConf.api)
+  const adapter = adapter(config)
 
-  function reportFailure (err, _req) {
-    res.writeHead(500, {'Content-Type': 'application/json+openhim'})
+  function reportFailure(err, _req) {
+    res.writeHead(500, { 'Content-Type': 'application/json+openhim' })
     logger.error(err.stack)
     logger.error('Something went wrong; relaying error to OpenHIM-core.')
     const response = buildReturnObject(
@@ -123,7 +137,7 @@ module.exports = (_req, res) => {
               return nextOIMCont()
             })
           } else {
-            let record = {"urns": urns, "fields": {"globalid": globalID}}
+            let record = { "urns": urns, "fields": { "globalid": globalID } }
             if (OIMContact.hasOwnProperty("name")) {
               record.name = OIMContact.name
             }
@@ -160,12 +174,110 @@ module.exports = (_req, res) => {
       return reportFailure(new Error('No CSD document returned.'), req)
     }
     logger.info('Done fetching providers.')
-  })
 
-  const returnObject = buildReturnObject(
-    'Successful',
-    200,
-    'Endpoint Response!'
-  )
-  return res.send(returnObject)
+    //extract CSD entities
+    const doc = new DOMParser().parseFromString(CSDDoc)
+    const select = XPath.useNamespaces({ 'csd': 'urn:ihe:iti:csd:2013' })
+    let entities = select('/csd:CSD/csd:providerDirectory/csd:provider', doc)
+    entities = entities.map((entity) => entity.toString())
+    logger.info('Converting ${entities.length} CSD entities to RapidPro contacts...')
+    let contacts = entities.map((entity) => {
+      try {
+        return adapter.convertCSDToContact(entity)
+      } catch (err) {
+        logger.warn(`${err.message}, skipping contact.`)
+        return null
+      }
+    }).filter((c) => {
+      return c !== null
+    })
+    logger.info('Done converting Providers to RapidPro Contacts.')
+
+    new Promise((resolve, reject) => {
+      if (config.rapidpro.groupname) {
+        logger.info('Fetching group UUID for RapidPro...')
+        rapidpro.getGroupUUID(config.rapidpro.groupname, (err, groupUUID, orchs) => {
+          if (orchs) {
+            orchestrations = orchestrations.concat(orchs)
+          }
+          if (err) {
+            reject(err)
+          }
+          logger.info(`Done fetching group UUID: ${groupUUID}.`)
+          resolve(groupUUID)
+        })
+      } else {
+        resolve(null)
+      }
+    }).then((groupUUID) => {
+      let errCount = 0
+      logger.info("Fetching RapidPro contacts.")
+      rapidpro.getContacts(false, false, false, (RPContacts) => {
+        logger.info("Done getting RapidPro contacts.")
+        logger.info("Generating contacts based on HRIS and RapidPro.")
+        createContacts(contacts, RPContacts, groupUUID, (contacts) => {
+          logger.info("Done generating contacts based on HRIS and RapidPro.")
+          logger.info(`Adding/Updating ${contacts.length} contacts to RapidPro...`)
+          /* RapidPro is limited to 2500 requests per hour, meaning 1 reqest/1.44 seconds.
+            calculate the number of milliseconds to wait before processing the next contact
+          */
+          let totalContacts = contacts.length
+          let counter = 0
+          async.eachSeries(contacts, (contact, nextContact) => {
+            rapidpro.addContact(contact, (err, contact, orchs) => {
+              counter++
+              logger.info("Processed " + counter + "/" + totalContacts + " contacts.")
+              if (orchs) {
+                orchestrations = orchestrations.concat(orchs)
+              }
+              if (err) {
+                logger.error(err)
+                errCount++
+              }
+              return nextContact()
+            })
+          }, function () {
+            logger.info(`Done adding/updating ${contacts.length} contacts to RapidPro, there were ${errCount} errors.`)
+            let now = moment().format("YYYY-MM-DDTHH:mm:ss")
+            config.sync.last_sync = now
+            config.sync.reset = false
+            logger.info("Updating last sync.")
+            OpenHIM.updateConfig(mediatorConfig.urn, config, (res) => {
+              logger.info("Done updating last sync.")
+            })
+            logger.info('Fetching RapidPro contacts and converting them to CSD entities...')
+            adapter.getRapidProContactsAsCSDEntities(groupUUID, (err, contacts, orchs) => {
+              if (orchs) {
+                orchestrations = orchestrations.concat(orchs)
+              }
+              if (err) {
+                return reportFailure(err, req)
+              }
+              logger.info(`Done fetching and converting ${contacts.length} contacts.`)
+
+              logger.info('Loading provider directory with contacts...')
+              openinfoman.loadProviderDirectory(contacts, (err, orchs) => {
+                if (orchs) {
+                  orchestrations = orchestrations.concat(orchs)
+                }
+                if (err) {
+                  return reportFailure(err, req)
+                }
+                logger.info('Done loading provider directory.')
+
+                const returnObject = buildReturnObject(
+                  'Successful',
+                  200,
+                  'Endpoint Response!'
+                )
+                return res.end(returnObject)
+              })
+            })
+          })
+        })
+      })
+    }, (err) => {
+      return reportFailure(err, req)
+    })
+  })
 }

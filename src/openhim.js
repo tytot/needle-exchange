@@ -4,7 +4,7 @@ import fs from 'fs'
 import path from 'path'
 // The OpenHIM Mediator Utils is an essential package for quick mediator setup.
 // It handles the OpenHIM authentication, mediator registration, and mediator heartbeat.
-import {activateHeartbeat, registerMediator} from 'openhim-mediator-utils'
+import { activateHeartbeat, registerMediator } from 'openhim-mediator-utils'
 import logger from './logger'
 
 // The OpenHIM config is controlled via Environment Variables to prevent ever having to
@@ -16,9 +16,10 @@ import {
   TRUST_SELF_SIGNED
 } from './config/config'
 
-import {setMediatorUrn} from './routes/utils'
+import { setMediatorUrn } from './routes/utils'
 
 const mediatorSetup = () => {
+  openhimopenhim
   // The mediatorConfig file contains some basic configuration settings about the mediator
   // as well as details about the default channel setup.
   const mediatorConfigFile = fs.readFileSync(
@@ -66,4 +67,4 @@ const mediatorSetup = () => {
   })
 }
 
-exports.mediatorSetup = mediatorSetup
+export default mediatorSetup

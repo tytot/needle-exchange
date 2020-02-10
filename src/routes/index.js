@@ -2,7 +2,7 @@
 
 import express from 'express'
 
-import {buildReturnObject} from './utils'
+import { buildReturnObject } from './utils'
 import endpoint from './endpoint'
 import logger from '../logger'
 
@@ -27,4 +27,4 @@ routes.all('*', (req, res) => {
   res.status(404).send(returnObject)
 })
 
-module.exports = routes
+export { routes }

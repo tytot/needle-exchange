@@ -3,7 +3,7 @@
 import express from 'express'
 
 import openhim from './openhim'
-import {SERVER_PORT} from './config/config'
+import { SERVER_PORT } from './config/config'
 import routes from './routes/'
 import logger from './logger'
 

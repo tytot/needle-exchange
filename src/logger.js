@@ -1,6 +1,6 @@
-import pino, {stdSerializers} from 'pino'
+import pino, { stdSerializers } from 'pino'
 
-import {LOG_LEVEL} from './config/config'
+import { LOG_LEVEL } from './config/config'
 
 const logger = pino({
   level: LOG_LEVEL,
@@ -10,4 +10,4 @@ const logger = pino({
   }
 })
 
-module.exports = logger
+export default logger

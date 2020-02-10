@@ -3,10 +3,19 @@
   "version": "1.0.0",
   "description": "An interactive needle exchange system featuring OpenHIM, OpenInfoMan, and RapidPro",
   "dependencies": {
+    "async": "^3.1.1",
     "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "lodash": "^4.17.15",
     "openhim-mediator-utils": "^0.2.3",
-    "pino": "^5.13.5",
-    "pino-pretty": "^3.2.2"
+    "path": "^0.12.7",
+    "pino": "^5.16.0",
+    "pino-pretty": "^3.2.2",
+    "request": "^2.88.0",
+    "underscore": "^1.9.2",
+    "urijs": "^1.19.2",
+    "xmldom": "^0.2.1",
+    "xpath": "0.0.27"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.4",
@@ -26,7 +35,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix ."
   },
-  "repository": "git@github.com:tytot/needle-exchange.git",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tytot/needle-exchange.git"
+  },
   "keywords": [
     "needle",
     "exchange",
@@ -36,5 +48,7 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/tytot/needle-exchange/issues"
-  }
+  },
+  "homepage": "https://github.com/tytot/needle-exchange#readme",
+  "main": "babel.config.js"
 }

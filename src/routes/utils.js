@@ -16,7 +16,7 @@ export const buildReturnObject = (
 ) => {
   const response = {
     status: httpResponseStatusCode,
-    headers: {'content-type': 'application/json'},
+    headers: { 'content-type': 'application/json' },
     body: responseBody,
     timestamp: new Date()
   }
@@ -24,6 +24,27 @@ export const buildReturnObject = (
     'x-mediator-urn': urn,
     status: openhimTransactionStatus,
     response,
-    properties: {property: 'Primary Route'}
+    properties: { property: 'Primary Route' }
+  }
+}
+
+export const buildOrchestration = (name, beforeTimestamp, method, url, requestContent, res, body) => {
+  let uri = new URI(url)
+  return {
+    name: name,
+    request: {
+      method: method,
+      body: requestContent,
+      timestamp: beforeTimestamp,
+      path: uri.path(),
+      querystring: uri.query()
+
+    },
+    response: {
+      status: res.statusCode,
+      headers: res.headers,
+      body: body,
+      timestamp: new Date()
+    }
   }
 }

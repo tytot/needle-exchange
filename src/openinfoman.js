@@ -2,11 +2,11 @@
 
 import request from 'request'
 import URI from 'urijs'
-import utils from './utils'
+import { buildOrchestration } from './routes/utils'
 
-module.exports = function(cfg) {
+export default function openinfoman(cfg) {
     const config = cfg
-    
+
     return {
         /**
          * fetches all entities in a particular CSD document and calls back with the full CSD document.
@@ -14,14 +14,15 @@ module.exports = function(cfg) {
          * @param {boolean} reset : whether or not to reset lastFetch
          * @param {function} callback : takes the form of callback(err, result, orchestrations)
          */
-        fetchAllEntities: function(lastFetch, reset, callback) {
-            let url = new URI(config.url).segment('CSD/csr').segment(config.queryDocument)
-            .segment('careServicesRequest').segment('/urn:ihe:iti:csd:2014:stored-function:provider-search')
+        fetchAllEntities: function (lastFetch, reset, callback) {
+            let URI = new URI(config.url).segment('CSD/csr').segment(config.queryDocument)
+                .segment('careServicesRequest').segment('/urn:ihe:iti:csd:2014:stored-function:provider-search')
 
+            let record
             if (reset) {
-                let record = '<csd:record updated="1970-01-01T00:00:00"/>'
+                record = '<csd:record updated="1970-01-01T00:00:00"/>'
             } else {
-                let record = '<csd:record updated="' + lastFetch + '"/>'
+                record = '<csd:record updated="' + lastFetch + '"/>'
             }
             let username = config.username
             let password = config.password
@@ -39,7 +40,7 @@ module.exports = function(cfg) {
                 if (err) {
                     return callback(err)
                 }
-                callback(null, body, [utils.buildOrchestration('Fetch OpenInfoMan Entities', before, 'POST', options.url, options.body, res, body)])
+                callback(null, body, [buildOrchestration('Fetch OpenInfoMan Entities', before, 'POST', options.url, options.body, res, body)])
             })
         },
 
@@ -49,7 +50,7 @@ module.exports = function(cfg) {
          * @param {array} providers : a string array containing XML provider entities
          * @param {function} callback : takes the form of callback(err, orchestrations) 
          */
-        loadProviders: function(providers, callback) {
+        loadProviders: function (providers, callback) {
             let orchestrations = []
             let username = config.username
             let password = config.password
@@ -67,10 +68,10 @@ module.exports = function(cfg) {
                 if (err) {
                     return callback(err)
                 }
-                orchestrations.push(utils.buildOrchestration('Clear OpenInfoMan RapidPro Directory', before, 'GET', emptyDirectoryURI.toString(), null, res, body))
+                orchestrations.push(buildOrchestration('Clear OpenInfoMan RapidPro Directory', before, 'GET', emptyDirectoryURI.toString(), null, res, body))
 
                 let updateURI = new URI(config.url).segment('/CSD/csr/').segment(config.rapidProDocument)
-                .segment('/careServicesRequest/update/urn:openhie.org:openinfoman:provider_create')
+                    .segment('/careServicesRequest/update/urn:openhie.org:openinfoman:provider_create')
 
                 let options = {
                     url: updateURI.toString(),
@@ -85,7 +86,7 @@ module.exports = function(cfg) {
                     if (err) {
                         return callback(err)
                     }
-                    orchestrations.push(utils.buildOrchestration('Load OpenInfoMan RapidPro Directory', before, 'POST', options.url, options.body, res, body))
+                    orchestrations.push(buildOrchestration('Load OpenInfoMan RapidPro Directory', before, 'POST', options.url, options.body, res, body))
                     callback(null, orchestrations)
                 })
             })
