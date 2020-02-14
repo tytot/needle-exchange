@@ -1,10 +1,11 @@
 'use strict'
 
+import fs from 'fs'
 import logger from '../logger'
 import openinfoman from '../openinfoman'
 import openhim from '../openhim'
 import rapidpro from '../rapidpro'
-import adapter from '../adapter'
+import _adapter from '../adapter'
 import { buildReturnObject } from './utils'
 import async from 'async'
 import unique from 'array-unique'
@@ -14,15 +15,28 @@ import { DOMParser } from 'xmldom'
 
 let config = {}
 import apiConf from '../config/config'
-import mediatorConfig from '../config/mediatorConfig'
 
-export function endpoint(_req, res) {
+module.exports = (_req, res) => {
 
   logger.info('Update Triggered')
 
   const OIM = openinfoman(config.openinfoman)
   const OpenHIM = openhim(apiConf.api)
-  const adapter = adapter(config)
+  const adapter = _adapter(config)
+
+  // The mediatorConfig file contains some basic configuration settings about the mediator
+  // as well as details about the default channel setup.
+  const mediatorConfigFile = fs.readFileSync(
+    path.resolve(__dirname, '...', 'mediatorConfig.json')
+  )
+
+  let mediatorConfig
+  try {
+    mediatorConfig = JSON.parse(mediatorConfigFile)
+  } catch (error) {
+    logger.error(`Failed to parse JSON in mediatorConfig.json`)
+    throw error
+  }
 
   function reportFailure(err, _req) {
     res.writeHead(500, { 'Content-Type': 'application/json+openhim' })

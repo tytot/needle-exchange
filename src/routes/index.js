@@ -26,5 +26,4 @@ routes.all('*', (req, res) => {
   })
   res.status(404).send(returnObject)
 })
-
-export { routes }
+module.exports = routes

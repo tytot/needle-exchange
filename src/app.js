@@ -7,12 +7,12 @@ import { SERVER_PORT } from './config/config'
 import routes from './routes/'
 import logger from './logger'
 
-function app() {
-  const app = express()
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 
-  app.use(express.json())
-  app.use('/', routes)
-}
+const app = express()
+
+app.use(express.json())
+app.use('/', routes)
 
 app.listen(SERVER_PORT, () => {
   logger.info(`Server listening on Port ${SERVER_PORT}...`)

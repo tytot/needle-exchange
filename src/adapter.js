@@ -1,12 +1,12 @@
 'use strict'
 import { DOMParser } from 'xmldom'
-import rapidpro from './rapidpro'
+import _rapidpro from './rapidpro'
 import XPath from 'xpath'
 import _ from 'lodash'
 
 export default function adapter(config) {
     
-    const rapidpro = rapidpro(config.rapidpro)
+    const rapidpro = _rapidpro(config.rapidpro)
 
     /**
      * buildContactsByGlobalIDMap - build a map that groups contacts by globalid

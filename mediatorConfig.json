@@ -1,4 +1,4 @@
-module.exports = {
+{
   "urn": "urn:mediator:needle-exchange",
   "version": "1.0.0",
   "name": "Needle Exchange Mediator",
