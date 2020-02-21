@@ -1,7 +1,7 @@
 'use strict'
 
 import request from 'request'
-import URI from 'urijs'
+import _URI from 'urijs'
 import { buildOrchestration } from './routes/utils'
 
 export default function openinfoman(cfg) {
@@ -15,7 +15,7 @@ export default function openinfoman(cfg) {
          * @param {function} callback : takes the form of callback(err, result, orchestrations)
          */
         fetchAllEntities: function (lastFetch, reset, callback) {
-            let URI = new URI(config.url).segment('CSD/csr').segment(config.queryDocument)
+            let URI = new _URI(config.url).segment('CSD/csr').segment(config.queryDocument)
                 .segment('careServicesRequest').segment('/urn:ihe:iti:csd:2014:stored-function:provider-search')
 
             let record

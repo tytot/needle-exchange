@@ -1,5 +1,7 @@
 'use strict'
 
+import URI from 'urijs'
+
 let urn
 
 export const setMediatorUrn = mediatorUrn => {
