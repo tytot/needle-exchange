@@ -56,7 +56,7 @@ export default function openinfoman(cfg) {
             let password = config.password
             let auth = "Basic " + new Buffer(username + ":" + password).toString("base64")
 
-            let emptyDirectoryURI = new URI(config.url).segment('CSD/emptyDirectory/').segment(config.rapidProDocument)
+            let emptyDirectoryURI = new _URI(config.url).segment('CSD/emptyDirectory/').segment(config.rapidProDocument)
             let options = {
                 url: emptyDirectoryURI.toString(),
                 headers: {
@@ -70,7 +70,7 @@ export default function openinfoman(cfg) {
                 }
                 orchestrations.push(buildOrchestration('Clear OpenInfoMan RapidPro Directory', before, 'GET', emptyDirectoryURI.toString(), null, res, body))
 
-                let updateURI = new URI(config.url).segment('/CSD/csr/').segment(config.rapidProDocument)
+                let updateURI = new _URI(config.url).segment('/CSD/csr/').segment(config.rapidProDocument)
                     .segment('/careServicesRequest/update/urn:openhie.org:openinfoman:provider_create')
 
                 let options = {

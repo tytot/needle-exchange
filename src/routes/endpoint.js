@@ -3,30 +3,33 @@
 import logger from '../logger'
 import openinfoman from '../openinfoman'
 import openhim from '../openhim'
-import rapidpro from '../rapidpro'
+import _rapidpro from '../rapidpro'
 import _adapter from '../adapter'
 import async from 'async'
+import moment from 'moment'
 import unique from 'array-unique'
 import XPath from 'xpath'
 import _ from 'underscore'
 import { DOMParser } from 'xmldom'
-import utils from './utils'
+import { buildReturnObject, _urn } from './utils'
 import { fetchConfig } from 'openhim-mediator-utils'
 
 module.exports = (_req, res) => {
   fetchConfig(openhim.config, (err, newConfig) => {
     let config = newConfig
 
-    logger.info('Update Triggered')
+    logger.info('Update Triggered...')
 
+    let orchestrations = []
     const OIM = openinfoman(config.openinfoman)
     const adapter = _adapter(config)
+    const rapidpro = _rapidpro(config.rapidpro)
 
     function reportFailure(err, _req) {
       res.writeHead(500, { 'Content-Type': 'application/json+openhim' })
       logger.error(err.stack)
       logger.error('Something went wrong; relaying error to OpenHIM-core.')
-      const response = utils.buildReturnObject(
+      const response = buildReturnObject(
         'Failed',
         500,
         err.stack
@@ -178,7 +181,7 @@ module.exports = (_req, res) => {
       const select = XPath.useNamespaces({ 'csd': 'urn:ihe:iti:csd:2013' })
       let entities = select('/csd:CSD/csd:providerDirectory/csd:provider', doc)
       entities = entities.map((entity) => entity.toString())
-      logger.info('Converting ${entities.length} CSD entities to RapidPro contacts...')
+      logger.info(`Converting ${entities.length} CSD entities to RapidPro contacts...`)
       let contacts = entities.map((entity) => {
         try {
           return adapter.convertCSDToContact(entity)
@@ -240,7 +243,7 @@ module.exports = (_req, res) => {
               config.sync.last_sync = now
               config.sync.reset = false
               logger.info("Updating last sync.")
-              openhim.utils.updateConfig(utils.urn, config, (res) => {
+              openhim.utils(config).updateConfig(_urn, config, (res) => {
                 logger.info("Done updating last sync.")
               })
               logger.info('Fetching RapidPro contacts and converting them to CSD entities...')
@@ -254,7 +257,7 @@ module.exports = (_req, res) => {
                 logger.info(`Done fetching and converting ${contacts.length} contacts.`)
 
                 logger.info('Loading provider directory with contacts...')
-                openinfoman.loadProviderDirectory(contacts, (err, orchs) => {
+                OIM.loadProviders(contacts, (err, orchs) => {
                   if (orchs) {
                     orchestrations = orchestrations.concat(orchs)
                   }
@@ -268,7 +271,7 @@ module.exports = (_req, res) => {
                     200,
                     'Endpoint Response!'
                   )
-                  return res.end(returnObject)
+                  return res.end(JSON.stringify(returnObject))
                 })
               })
             })

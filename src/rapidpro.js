@@ -99,94 +99,140 @@ export default function rapidpro(config) {
 
     const getContacts = function (next, requireGlobalID, groupUUID, callback) {
         if (!next) {
-            let next = contactsURL(groupUUID)
+            next = contactsURL(groupUUID)
         }
-        logger.info(next)
+        logger.info(`Pulling from ${next}...`)
         let contacts = {}
-        async.doWhilst(
-            function (callback) {
-                let options = {
-                    url: next,
-                    headers: {
-                        Authorization: `Token ${config.authtoken}`
-                    }
-                }
-                request(options, (err, res, body) => {
-                    if (err) {
-                        logger.error(err)
-                        return callback(err)
-                    }
-                    isThrottled(JSON.parse(body), (wasThrottled) => {
-                        if (wasThrottled) {
-                            //reprocess this contact
-                            getContacts(next, requireGlobalID, groupUUID, (RPContacts) => {
-                                next = false
-                                const promises = []
-                                for (let UUID in RPContacts) {
-                                    promises.push(new Promise((resolve, reject) => {
-                                        contacts[UUID] = RPContacts[UUID]
-                                        resolve()
-                                    }))
-                                }
-                                Promise.all(promises).then(() => {
-                                    return callback(false, false)
-                                })
-                            })
-                        }
-                        else {
-                            if (err) {
-                                return callback(err)
-                            }
-                            body = JSON.parse(body)
-                            if (!body.hasOwnProperty("results")) {
-                                logger.error(JSON.stringify(body))
-                                logger.error("An error occurred while pushing contacts to RapidPro.")
-                                return callback()
-                            }
-                            if (body.next)
-                                next = body.next
-                            else
-                                next = false
-                            async.eachSeries(body["results"], (contact, nextCont) => {
-                                if (requireGlobalID &&
-                                    (
-                                        !contact.fields.hasOwnProperty("globalid") ||
-                                        contact.fields.globalid == null ||
-                                        contact.fields.globalid == undefined ||
-                                        contact.fields.globalid == ""
-                                    )
-                                ) {
-                                    return nextCont()
-                                }
-
-                                if (contact.fields.hasOwnProperty("globalid") &&
-                                    contact.fields.globalid != null &&
-                                    contact.fields.globalid != undefined &&
-                                    contact.fields.globalid != ""
-                                ) {
-                                    contacts[contact.fields.globalid] = contact
-                                    return nextCont()
-                                }
-                                else {
-                                    contacts[contact.uuid] = contact
-                                    return nextCont()
-                                }
-                            }, function () {
-                                return callback(false, next)
-                            })
-                        }
-                    })
-                })
-            },
-            function () {
-                if (next)
-                    logger.info("Fetching in " + next + ".")
-                return (next != false)
-            },
-            function () {
-                return callback(contacts)
+        //temporary fix...
+        let options = {
+            url: next,
+            headers: {
+                Authorization: `Token ${config.authtoken}`
             }
-        )
+        }
+        request(options, (err, res, body) => {
+            if (err) {
+                logger.error(err)
+                return callback(err)
+            }
+            body = JSON.parse(body)
+            if (!body.hasOwnProperty("results")) {
+                logger.error(JSON.stringify(body))
+                logger.error("An error occurred while pushing contacts to RapidPro.")
+                return callback()
+            }
+            for (let i = 0; i < body["results"].length; i++) {
+                let contact = body["results"][i]
+                // if (requireGlobalID &&
+                //     (
+                //         !contact.fields.hasOwnProperty("globalid") ||
+                //         contact.fields.globalid == null ||
+                //         contact.fields.globalid == undefined ||
+                //         contact.fields.globalid == ""
+                //     )
+                // ) {
+                //     logger.info('bruh')
+                //     continue
+                // }
+                if (contact.fields.hasOwnProperty("globalid") &&
+                    contact.fields.globalid != null &&
+                    contact.fields.globalid != undefined &&
+                    contact.fields.globalid != ""
+                ) {
+                    contacts[contact.fields.globalid] = contact
+                }
+                else {
+                    contacts[contact.uuid] = contact
+                }
+            }
+            callback(contacts)
+        })
+        // async.doWhilst(
+        //     function (callback) {
+        //         logger.info('bruh')
+        //         let options = {
+        //             url: next,
+        //             headers: {
+        //                 Authorization: `Token ${config.authtoken}`
+        //             }
+        //         }
+        //         request(options, (err, res, body) => {
+        //             if (err) {
+        //                 logger.error(err)
+        //                 return callback(err)
+        //             }
+        //             isThrottled(JSON.parse(body), (wasThrottled) => {
+        //                 if (wasThrottled) {
+        //                     //reprocess this contact
+        //                     getContacts(next, requireGlobalID, groupUUID, (RPContacts) => {
+        //                         next = false
+        //                         const promises = []
+        //                         for (let UUID in RPContacts) {
+        //                             promises.push(new Promise((resolve, reject) => {
+        //                                 contacts[UUID] = RPContacts[UUID]
+        //                                 resolve()
+        //                             }))
+        //                         }
+        //                         Promise.all(promises).then(() => {
+        //                             return callback(false, false)
+        //                         })
+        //                     })
+        //                 }
+        //                 else {
+        //                     if (err) {
+        //                         return callback(err)
+        //                     }
+        //                     body = JSON.parse(body)
+        //                     logger.info(body)
+        //                     if (!body.hasOwnProperty("results")) {
+        //                         logger.error(JSON.stringify(body))
+        //                         logger.error("An error occurred while pushing contacts to RapidPro.")
+        //                         return callback()
+        //                     }
+        //                     if (body.next)
+        //                         next = body.next
+        //                     else
+        //                         next = false
+        //                     async.eachSeries(body["results"], (contact, nextCont) => {
+        //                         if (requireGlobalID &&
+        //                             (
+        //                                 !contact.fields.hasOwnProperty("globalid") ||
+        //                                 contact.fields.globalid == null ||
+        //                                 contact.fields.globalid == undefined ||
+        //                                 contact.fields.globalid == ""
+        //                             )
+        //                         ) {
+        //                             return nextCont()
+        //                         }
+
+        //                         if (contact.fields.hasOwnProperty("globalid") &&
+        //                             contact.fields.globalid != null &&
+        //                             contact.fields.globalid != undefined &&
+        //                             contact.fields.globalid != ""
+        //                         ) {
+        //                             contacts[contact.fields.globalid] = contact
+        //                             return nextCont()
+        //                         }
+        //                         else {
+        //                             contacts[contact.uuid] = contact
+        //                             return nextCont()
+        //                         }
+        //                     }, function () {
+        //                         return callback(false, next)
+        //                     })
+        //                 }
+        //             })
+        //         })
+        //     },
+        //     function () {
+        //         if (next)
+        //             logger.info("Fetching in " + next + ".")
+        //         return (next != false)
+        //     },
+        //     function () {
+        //         return callback(contacts)
+        //     }
+        // )
     }
 
     const addContact = function (contact, callback) {

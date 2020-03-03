@@ -2,8 +2,7 @@
 
 import URI from 'urijs'
 
-let urn
-
+export let urn 
 export const setMediatorUrn = mediatorUrn => {
   urn = mediatorUrn
 }
@@ -26,7 +25,7 @@ export const buildReturnObject = (
     'x-mediator-urn': urn,
     status: openhimTransactionStatus,
     response,
-    properties: { property: 'Primary Route' }
+    properties: { property: 'Primary Route' },
   }
 }
 

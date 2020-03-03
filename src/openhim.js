@@ -68,70 +68,70 @@ const mediatorSetup = () => {
   })
 }
 
-// function utils(mediatorConfig) {
-//   return {
-//     fetchChannelByName: (name, callback) => {
-//       authenticate(mediatorConfig, () => {
-//         const options = {
-//           url: `${mediatorConfig.apiURL}/channels`,
-//           headers: genAuthHeaders(mediatorConfig),
-//           json: true
-//         }
-//         request.get(options, (err, res, channels) => {
-//           if (err) {
-//             return callback(err)
-//           }
-//           let channel = null
-//           channels.array.forEach(c => {
-//             if (c.name === name) {
-//               channel = c
-//             }
-//           })
-//           if (channel) {
-//             callback(null, channel)
-//           } else {
-//             callback(new Error('Could not find Channel.'))
-//           }
-//         })
-//       })
-//     },
+const utils = () => {
+  return {
+    fetchChannelByName: (name, callback) => {
+      authenticate(openhimConfig, () => {
+        const options = {
+          url: `${openhimConfig.apiURL}/channels`,
+          headers: genAuthHeaders(openhimConfig),
+          json: true
+        }
+        request.get(options, (err, res, channels) => {
+          if (err) {
+            return callback(err)
+          }
+          let channel = null
+          channels.array.forEach(c => {
+            if (c.name === name) {
+              channel = c
+            }
+          })
+          if (channel) {
+            callback(null, channel)
+          } else {
+            callback(new Error('Could not find Channel.'))
+          }
+        })
+      })
+    },
 
-//     updateChannel: (ID, channel, callback) => {
-//       authenticate(mediatorConfig, () => {
-//         const options = {
-//           url: `${mediatorConfig.apiURL}/channels/${ID}`,
-//           headers: genAuthHeaders(mediatorConfig),
-//           body: channel,
-//           json: true
-//         }
-//         request.put(options, (err, res) => {
-//           if (err) {
-//             return callback(err)
-//           }
-//           callback()
-//         })
-//       })
-//     },
+    updateChannel: (ID, channel, callback) => {
+      authenticate(openhimConfig, () => {
+        const options = {
+          url: `${openhimConfig.apiURL}/channels/${ID}`,
+          headers: genAuthHeaders(openhimConfig),
+          body: channel,
+          json: true
+        }
+        request.put(options, (err, res) => {
+          if (err) {
+            return callback(err)
+          }
+          callback()
+        })
+      })
+    },
 
-//     updateConfig: (urn, configUpdate, callback) => {
-//       authenticate(mediatorConfig, () => {
-//         const options = {
-//           url: `${mediatorConfig.apiURL}/mediators/${urn}/config`,
-//           headers: genAuthHeaders(mediatorConfig),
-//           body: configUpdate,
-//           json: true
-//         }
-//         request.put(options, (err, res, body) => {
-//           if (err) {
-//             return callback(err)
-//           }
-//           callback()
-//         })
-//       })
-//     }
-//   }
-// }
+    updateConfig: (urn, configUpdate, callback) => {
+      authenticate(openhimConfig, () => {
+        const options = {
+          url: `${openhimConfig.apiURL}/mediators/${urn}/config`,
+          headers: genAuthHeaders(openhimConfig),
+          body: configUpdate,
+          json: true
+        }
+        request.put(options, (err, res, body) => {
+          if (err) {
+            return callback(err)
+          }
+          callback()
+        })
+      })
+    }
+  }
+}
 
 exports.mediatorSetup = mediatorSetup
 exports.config = openhimConfig
-//exports.utils = utils
+exports.utils = utils
