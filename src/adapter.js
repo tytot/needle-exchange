@@ -1,8 +1,9 @@
 'use strict'
-import { DOMParser } from 'xmldom'
 import _rapidpro from './rapidpro'
 import XPath from 'xpath'
 import _ from 'lodash'
+
+const Dom = require('xmldom').DOMParser
 
 export default function adapter(config) {
     
@@ -93,7 +94,9 @@ export default function adapter(config) {
          * @return {Object}        A javascript object representing the RapidPro contact
          */
         convertCSDToContact: function (entity) {
-            const doc = new DOMParser().parseFromString(entity)
+            entity = entity.replace(/\s\s+/g, '')
+            entity = entity.replace(/xmlns=\"(.*?)\"/g, '')
+            const doc = new Dom().parseFromString(entity)
             const uuid = XPath.select('/provider/@entityID', doc)[0].value
             const name = XPath.select('/provider/demographic/name/commonName/text()', doc)[0].toString()
             const telNodes = XPath.select('/provider/demographic/contactPoint/codedType[@code="BP" and @codingScheme="urn:ihe:iti:csd:2013:contactPoint"]/text()', doc)
@@ -105,14 +108,14 @@ export default function adapter(config) {
             if (tels.length === 0) {
                 throw new Error(`couldn\'t find a telephone number for provider with entityID ${uuid}, this is a required field for a contact`)
             }
-
-            return {
+            const data = {
                 name: name,
                 urns: tels,
                 fields: {
                     globalid: uuid
                 }
             }
+            return data
         }
     }
 }

@@ -14,16 +14,10 @@ export default function openinfoman(cfg) {
          * @param {boolean} reset : whether or not to reset lastFetch
          * @param {function} callback : takes the form of callback(err, result, orchestrations)
          */
-        fetchAllEntities: function (lastFetch, reset, callback) {
+        fetchAllEntities: function (callback) {
             let URI = new _URI(config.url).segment('CSD/csr').segment(config.queryDocument)
                 .segment('careServicesRequest').segment('/urn:ihe:iti:csd:2014:stored-function:provider-search')
 
-            let record
-            if (reset) {
-                record = '<csd:record updated="1970-01-01T00:00:00"/>'
-            } else {
-                record = '<csd:record updated="' + lastFetch + '"/>'
-            }
             let username = config.username
             let password = config.password
             let auth = "Basic " + new Buffer(username + ":" + password).toString("base64")
@@ -33,7 +27,7 @@ export default function openinfoman(cfg) {
                     Authorization: auth,
                     'Content-Type': 'text/xml'
                 },
-                body: `<csd:requestParams xmlns:csd="urn:ihe:iti:csd:2013">${record}</csd:requestParams>`
+                body: `<csd:requestParams xmlns:csd="urn:ihe:iti:csd:2013"></csd:requestParams>`
             }
             let before = new Date()
             request.post(options, (err, res, body) => {

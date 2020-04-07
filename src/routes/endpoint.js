@@ -109,11 +109,13 @@ module.exports = (_req, res) => {
     }
     function createContacts(OIMContacts, RPContacts, UUID, callback) {
       let records = []
+      console.log(OIMContacts.length)
       async.eachSeries(OIMContacts, (OIMContact, nextOIMContact) => {
         if (!OIMContact.hasOwnProperty("fields") || !OIMContact.fields.hasOwnProperty("globalid") || !OIMContact.hasOwnProperty("urns") || Object.keys(OIMContact.urns).length == 0) {
           return nextOIMContact()
         }
         let globalID = OIMContact.fields.globalID
+        console.log(globalID)
         if (!globalID) {
           return nextOIMContact()
         }
@@ -164,7 +166,7 @@ module.exports = (_req, res) => {
     }
 
     logger.info('Pulling providers from OpenInfoMan...')
-    OIM.fetchAllEntities(config.sync.last_sync, config.sync.reset, (err, CSDDoc, orchs) => {
+    OIM.fetchAllEntities((err, CSDDoc, orchs) => {
       if (orchs) {
         orchestrations = orchestrations.concat(orchs)
       }
@@ -178,6 +180,7 @@ module.exports = (_req, res) => {
 
       //extract CSD entities
       const doc = new DOMParser().parseFromString(CSDDoc)
+      //console.log(doc)
       const select = XPath.useNamespaces({ 'csd': 'urn:ihe:iti:csd:2013' })
       let entities = select('/csd:CSD/csd:providerDirectory/csd:provider', doc)
       entities = entities.map((entity) => entity.toString())
@@ -193,6 +196,7 @@ module.exports = (_req, res) => {
         return c !== null
       })
       logger.info('Done converting Providers to RapidPro Contacts.')
+      console.log(contacts.length)
 
       new Promise((resolve, reject) => {
         if (config.rapidpro.groupname) {
@@ -239,13 +243,6 @@ module.exports = (_req, res) => {
               })
             }, function () {
               logger.info(`Done adding/updating ${contacts.length} contacts to RapidPro, there were ${errCount} errors.`)
-              let now = moment().format("YYYY-MM-DDTHH:mm:ss")
-              config.sync.last_sync = now
-              config.sync.reset = false
-              logger.info("Updating last sync.")
-              openhim.utils(config).updateConfig(_urn, config, (res) => {
-                logger.info("Done updating last sync.")
-              })
               logger.info('Fetching RapidPro contacts and converting them to CSD entities...')
               adapter.getRapidProContactsAsCSDEntities(groupUUID, (err, contacts, orchs) => {
                 if (orchs) {
