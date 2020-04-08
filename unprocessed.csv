@@ -1,0 +1,14 @@
+{"name":"Doe, John","urns":["tel:+12345678901"],"fields":{"globalid":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"}},{"fields":["Invalid contact field key: globalid"]}
+{"name":"Doe, Jane","urns":["tel:+12345678902"],"fields":{"globalid":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"}},{"fields":["Invalid contact field key: globalid"]}
+{"name":"Doe, John","urns":[["tel:+12345678901"],"uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"]},{"urns":{"0":["Invalid URN: ['tel:+12345678901']. Ensure phone numbers contain country codes."],"1":["Invalid URN: uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf. Ensure phone numbers contain country codes."]}}
+{"name":"Doe, Jane","urns":[["tel:+12345678902"],"uuid:de969593-36f2-454d-8599-0fd3027d78f0"]},{"urns":{"0":["Invalid URN: ['tel:+12345678902']. Ensure phone numbers contain country codes."],"1":["Invalid URN: uuid:de969593-36f2-454d-8599-0fd3027d78f0. Ensure phone numbers contain country codes."]}}
+{"name":"Doe, Jane","urns":["tel:+12345678902"],"fields":{"globalid":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"}},{"fields":["Invalid contact field key: globalid"]}
+{"name":"Doe, John","urns":["tel:+12345678901"],"fields":{"globalid":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"}},{"fields":["Invalid contact field key: globalid"]}
+{"name":"Doe, Jane","urns":["tel:+12345678902"],"fields":{"globalid":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"}},{"fields":["Invalid contact field key: globalid"]}
+{"name":"Doe, John","urns":["tel:+12345678901"],"fields":{"globalid":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"}},{"fields":["Invalid contact field key: globalid"]}
+{"name":"Doe, Jane","urns":["tel:+12345678902"]},{"urns":["URN belongs to another contact: tel:+12345678902"]}
+{"name":"Doe, John","urns":["tel:+12345678901"]},{"urns":["URN belongs to another contact: tel:+12345678901"]}
+{"name":"Doe, Jane","urns":["tel:+12345678902"]},{"urns":["URN belongs to another contact: tel:+12345678902"]}
+{"name":"Doe, John","urns":["tel:+12345678901"]},{"urns":["URN belongs to another contact: tel:+12345678901"]}
+{"name":"Doe, Jane","urns":["tel:+12345678902"]},{"urns":["URN belongs to another contact: tel:+12345678902"]}
+{"name":"Doe, John","urns":["tel:+12345678901"]},{"urns":["URN belongs to another contact: tel:+12345678901"]}

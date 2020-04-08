@@ -97,7 +97,6 @@ export default function adapter(config) {
             entity = entity.replace(/\s\s+/g, '')
             entity = entity.replace(/xmlns=\"(.*?)\"/g, '')
             const doc = new Dom().parseFromString(entity)
-            const uuid = XPath.select('/provider/@entityID', doc)[0].value
             const name = XPath.select('/provider/demographic/name/commonName/text()', doc)[0].toString()
             const telNodes = XPath.select('/provider/demographic/contactPoint/codedType[@code="BP" and @codingScheme="urn:ihe:iti:csd:2013:contactPoint"]/text()', doc)
             let tels = []
@@ -110,10 +109,7 @@ export default function adapter(config) {
             }
             const data = {
                 name: name,
-                urns: tels,
-                fields: {
-                    globalid: uuid
-                }
+                urns: tels
             }
             return data
         }

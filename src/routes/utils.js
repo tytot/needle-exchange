@@ -13,19 +13,27 @@ export const setMediatorUrn = mediatorUrn => {
 export const buildReturnObject = (
   openhimTransactionStatus,
   httpResponseStatusCode,
-  responseBody
+  responseBody,
+  req,
+  orchs
 ) => {
-  const response = {
-    status: httpResponseStatusCode,
-    headers: { 'content-type': 'application/json' },
-    body: responseBody,
-    timestamp: new Date()
-  }
+  console.log(orchs)
   return {
     'x-mediator-urn': urn,
     status: openhimTransactionStatus,
-    response,
-    properties: { property: 'Primary Route' },
+    request: {
+      method: req.method,
+      headers: req.headers,
+      timestamp: req.timestamp,
+      path: req.path
+    },
+    response: {
+      status: httpResponseStatusCode,
+      timestamp: new Date(),
+      headers: { 'content-type': 'application/json' },
+      body: responseBody
+    },
+    orchestrations: orchs
   }
 }
 
