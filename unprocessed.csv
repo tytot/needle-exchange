@@ -1,14 +1,28 @@
-{"name":"Doe, John","urns":["tel:+12345678901"],"fields":{"globalid":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"}},{"fields":["Invalid contact field key: globalid"]}
-{"name":"Doe, Jane","urns":["tel:+12345678902"],"fields":{"globalid":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"}},{"fields":["Invalid contact field key: globalid"]}
-{"name":"Doe, John","urns":[["tel:+12345678901"],"uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"]},{"urns":{"0":["Invalid URN: ['tel:+12345678901']. Ensure phone numbers contain country codes."],"1":["Invalid URN: uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf. Ensure phone numbers contain country codes."]}}
-{"name":"Doe, Jane","urns":[["tel:+12345678902"],"uuid:de969593-36f2-454d-8599-0fd3027d78f0"]},{"urns":{"0":["Invalid URN: ['tel:+12345678902']. Ensure phone numbers contain country codes."],"1":["Invalid URN: uuid:de969593-36f2-454d-8599-0fd3027d78f0. Ensure phone numbers contain country codes."]}}
-{"name":"Doe, Jane","urns":["tel:+12345678902"],"fields":{"globalid":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"}},{"fields":["Invalid contact field key: globalid"]}
-{"name":"Doe, John","urns":["tel:+12345678901"],"fields":{"globalid":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"}},{"fields":["Invalid contact field key: globalid"]}
-{"name":"Doe, Jane","urns":["tel:+12345678902"],"fields":{"globalid":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"}},{"fields":["Invalid contact field key: globalid"]}
-{"name":"Doe, John","urns":["tel:+12345678901"],"fields":{"globalid":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"}},{"fields":["Invalid contact field key: globalid"]}
-{"name":"Doe, Jane","urns":["tel:+12345678902"]},{"urns":["URN belongs to another contact: tel:+12345678902"]}
-{"name":"Doe, John","urns":["tel:+12345678901"]},{"urns":["URN belongs to another contact: tel:+12345678901"]}
-{"name":"Doe, Jane","urns":["tel:+12345678902"]},{"urns":["URN belongs to another contact: tel:+12345678902"]}
-{"name":"Doe, John","urns":["tel:+12345678901"]},{"urns":["URN belongs to another contact: tel:+12345678901"]}
-{"name":"Doe, Jane","urns":["tel:+12345678902"]},{"urns":["URN belongs to another contact: tel:+12345678902"]}
-{"name":"Doe, John","urns":["tel:+12345678901"]},{"urns":["URN belongs to another contact: tel:+12345678901"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":null,"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":null,"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:acfa6723-3f7e-4c3e-baaa-8d673d11f2bf"},"name":"Doe, John"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678901"],"fields":{"global_id":"urn:uuid:c73bc67b-ec90-4d92-b04e-bbd3ee226fb4"},"name":"Test, Test"},{"fields":["Invalid contact field key: global_id"]}
+{"uuid":"fb9ffb14-418e-45f6-b404-aa1be379746b","name":"Tyler Lin","language":null,"urns":["tel:+14437662143"],"fields":{"global_id":null,"global_id":"urn:uuid:f411b695-716f-4422-a18b-357fdd5b0584"},"blocked":false,"stopped":false,"created_on":"2020-05-10T15:11:10.425128Z","modified_on":"2020-05-10T15:11:10.425537Z"},{"fields":["Invalid contact field key: global_id"]}
+{"urns":["tel:+12345678902"],"fields":{"global_id":"urn:uuid:de969593-36f2-454d-8599-0fd3027d78f0"},"name":"Doe, Jane"},{"fields":["Invalid contact field key: global_id"]}

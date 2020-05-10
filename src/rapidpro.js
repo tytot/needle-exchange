@@ -15,8 +15,44 @@ export default function rapidpro(config) {
         return url.toString()
     }
 
+    const addCustomField = function (label) {
+        let url = URI(config.url)
+            .segment('api/v2/fields.json')
+            .toString()
+
+        let options = {
+            url: url,
+            headers: {
+                Authorization: `Token ${config.authtoken}`
+            },
+        }
+        request(options, (err, res, body) => {
+            if (err)
+                logger.error(err)
+            body = JSON.parse(body)
+            if (body["results"].length === 0) {
+                options = {
+                    url: url,
+                    headers: {
+                        Authorization: `Token ${config.authtoken}`
+                    },
+                    body: {
+                        "label": label,
+                        "value_type": "text"
+                    },
+                    json: true
+                }
+                request.post(options, (err, res, body) => {
+                    if (err) {
+                        logger.error(err)
+                    }
+                })
+            }
+        })
+    }
+
     const hasGlobalID = function (contact) {
-        return contact.fields && contact.fields.globalid
+        return contact.fields && contact.fields.global_id
     }
 
     const getGroupUUID = function (groupName, callback) {
@@ -103,142 +139,92 @@ export default function rapidpro(config) {
         }
         logger.info(`Pulling from ${next}...`)
         let contacts = {}
-        //temporary fix...
-        let options = {
-            url: next,
-            headers: {
-                Authorization: `Token ${config.authtoken}`
-            }
-        }
-        request(options, (err, res, body) => {
-            if (err) {
-                logger.error(err)
-                return callback(err)
-            }
-            body = JSON.parse(body)
-            if (!body.hasOwnProperty("results")) {
-                logger.error(JSON.stringify(body))
-                logger.error("An error occurred while pushing contacts to RapidPro.")
-                return callback()
-            }
-            for (let i = 0; i < body["results"].length; i++) {
-                let contact = body["results"][i]
-                // if (requireGlobalID &&
-                //     (
-                //         !contact.fields.hasOwnProperty("globalid") ||
-                //         contact.fields.globalid == null ||
-                //         contact.fields.globalid == undefined ||
-                //         contact.fields.globalid == ""
-                //     )
-                // ) {
-                //     logger.info('bruh')
-                //     continue
-                // }
-                if (contact.fields.hasOwnProperty("globalid") &&
-                    contact.fields.globalid != null &&
-                    contact.fields.globalid != undefined &&
-                    contact.fields.globalid != ""
-                ) {
-                    contacts[contact.fields.globalid] = contact
+        async.doWhilst(
+            function (callback) {
+                let options = {
+                    url: next,
+                    headers: {
+                        Authorization: `Token ${config.authtoken}`
+                    }
                 }
-                else {
-                    contacts[contact.uuid] = contact
-                }
+                request(options, (err, res, body) => {
+                    if (err) {
+                        logger.error(err)
+                        return callback(err)
+                    }
+                    isThrottled(JSON.parse(body), (wasThrottled) => {
+                        if (wasThrottled) {
+                            //reprocess this contact
+                            getContacts(next, requireGlobalID, groupUUID, (RPContacts) => {
+                                next = false
+                                const promises = []
+                                for (let UUID in RPContacts) {
+                                    promises.push(new Promise((resolve, reject) => {
+                                        contacts[UUID] = RPContacts[UUID]
+                                        resolve()
+                                    }))
+                                }
+                                Promise.all(promises).then(() => {
+                                    callback()
+                                })
+                            })
+                        }
+                        else {
+                            if (err) {
+                                return callback(err)
+                            }
+                            body = JSON.parse(body)
+                            if (!body.hasOwnProperty("results")) {
+                                logger.error(JSON.stringify(body))
+                                logger.error("An error occurred while getting contacts from RapidPro.")
+                                return callback()
+                            }
+                            if (body.next)
+                                next = body.next
+                            else
+                                next = false
+                            for (let contact of body["results"]) {
+                                if (requireGlobalID &&
+                                    (
+                                        !contact.fields.hasOwnProperty("global_id") ||
+                                        contact.fields.global_id == null ||
+                                        contact.fields.global_id == undefined ||
+                                        contact.fields.global_id == ""
+                                    )
+                                ) {
+                                    continue
+                                }
+                                if (contact.fields.hasOwnProperty("global_id") &&
+                                    contact.fields.global_id != null &&
+                                    contact.fields.global_id != undefined &&
+                                    contact.fields.global_id != ""
+                                ) {
+                                    contacts[contact.fields.global_id] = contact
+                                }
+                                else {
+                                    contacts[contact.uuid] = contact
+                                }
+                            }
+                            callback()
+                        }
+                    })
+                })
+            },
+            async function () {
+                return (next != false)
+            },
+            function (err) {
+                if (err) return callback(err)
+                return callback(contacts)
             }
-            callback(contacts)
-        })
-        // async.doWhilst(
-        //     function (callback) {
-        //         logger.info('bruh')
-        //         let options = {
-        //             url: next,
-        //             headers: {
-        //                 Authorization: `Token ${config.authtoken}`
-        //             }
-        //         }
-        //         request(options, (err, res, body) => {
-        //             if (err) {
-        //                 logger.error(err)
-        //                 return callback(err)
-        //             }
-        //             isThrottled(JSON.parse(body), (wasThrottled) => {
-        //                 if (wasThrottled) {
-        //                     //reprocess this contact
-        //                     getContacts(next, requireGlobalID, groupUUID, (RPContacts) => {
-        //                         next = false
-        //                         const promises = []
-        //                         for (let UUID in RPContacts) {
-        //                             promises.push(new Promise((resolve, reject) => {
-        //                                 contacts[UUID] = RPContacts[UUID]
-        //                                 resolve()
-        //                             }))
-        //                         }
-        //                         Promise.all(promises).then(() => {
-        //                             return callback(false, false)
-        //                         })
-        //                     })
-        //                 }
-        //                 else {
-        //                     if (err) {
-        //                         return callback(err)
-        //                     }
-        //                     body = JSON.parse(body)
-        //                     logger.info(body)
-        //                     if (!body.hasOwnProperty("results")) {
-        //                         logger.error(JSON.stringify(body))
-        //                         logger.error("An error occurred while pushing contacts to RapidPro.")
-        //                         return callback()
-        //                     }
-        //                     if (body.next)
-        //                         next = body.next
-        //                     else
-        //                         next = false
-        //                     async.eachSeries(body["results"], (contact, nextCont) => {
-        //                         if (requireGlobalID &&
-        //                             (
-        //                                 !contact.fields.hasOwnProperty("globalid") ||
-        //                                 contact.fields.globalid == null ||
-        //                                 contact.fields.globalid == undefined ||
-        //                                 contact.fields.globalid == ""
-        //                             )
-        //                         ) {
-        //                             return nextCont()
-        //                         }
-
-        //                         if (contact.fields.hasOwnProperty("globalid") &&
-        //                             contact.fields.globalid != null &&
-        //                             contact.fields.globalid != undefined &&
-        //                             contact.fields.globalid != ""
-        //                         ) {
-        //                             contacts[contact.fields.globalid] = contact
-        //                             return nextCont()
-        //                         }
-        //                         else {
-        //                             contacts[contact.uuid] = contact
-        //                             return nextCont()
-        //                         }
-        //                     }, function () {
-        //                         return callback(false, next)
-        //                     })
-        //                 }
-        //             })
-        //         })
-        //     },
-        //     function () {
-        //         if (next)
-        //             logger.info("Fetching in " + next + ".")
-        //         return (next != false)
-        //     },
-        //     function () {
-        //         return callback(contacts)
-        //     }
-        // )
+        )
     }
 
     const addContact = function (contact, callback) {
         let url = contactsURL()
-        if (contact.hasOwnProperty("uuid"))
+        if (contact.hasOwnProperty("uuid")) {
             url = url + "?uuid=" + contact.uuid
+        }
         let before = new Date()
 
         let options = {
@@ -289,6 +275,7 @@ export default function rapidpro(config) {
     }
 
     return {
+        addCustomField: addCustomField,
         /**
          * getGroupUUID - query RapidPro for the UUID for the configured group name
          *

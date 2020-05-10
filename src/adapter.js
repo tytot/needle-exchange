@@ -9,51 +9,28 @@ export default function adapter(config) {
     
     const rapidpro = _rapidpro(config.rapidpro)
 
-    /**
-     * buildContactsByGlobalIDMap - build a map that groups contacts by globalid
-     *
-     * @param  {Array} contacts an array of RapidPro contacts
-     * @return {Object} a map with K: globalid and V: an array of contacts that share globalid
-     */
-    const buildContactsByGlobalIDMap = function (contacts) {
-        let map = {}
-        for (let globalid in contacts) {
-            if (!map[globalid]) {
-                map[globalid] = []
-            }
-            map[globalid].push(contacts[globalid])
-        }
-        return map
-    }
-
-    const convertRapidProContactToCSD = function (globalid, contacts) {
-        let names = ''
+    const convertRapidProContactToCSD = function (global_id, contact) {
+        let name = `<commonName>${contact.name}</commonName>\n`
         let groups = ''
         let telNums = ''
 
-        let uniqFlatCompactByAttr = (attr) => _.uniq(_.flatten(_.compact(contacts.map((c) => c[attr]))))
-
-        for (let name of uniqFlatCompactByAttr('name')) {
-            names += `<commonName>${name}</commonName>\n`
-        }
-
-        for (let groupUUID of uniqFlatCompactByAttr('group_uuids')) {
+        for (let groupUUID of contact.groups) {
             groups += `<codedType code="${groupUUID}" codingScheme="${config.rapidpro.url}"/>\n`
         }
 
-        for (let urn of uniqFlatCompactByAttr('urns')) {
+        for (let urn of contact.urns) {
             if (urn.startsWith('tel:')) {
                 telNums += `<contactPoint><codedType code="BP" codingScheme="urn:ihe:iti:csd:2013:contactPoint">${urn.replace('tel:', '')}</codedType></contactPoint>\n`
             }
         }
 
         return `
-        <provider entityID="${globalid}">
-          <otherID code="rapidpro_contact_id" assigningAuthorityName="${config.rapidpro.url}/${config.rapidpro.slug}">${contacts.map((c) => c.uuid)}</otherID>
+        <provider entityID="${global_id}">
+          <otherID code="rapidpro_contact_id" assigningAuthorityName="${config.rapidpro.url}/${config.rapidpro.slug}">${contact.uuid}</otherID>
           ${groups}
           <demographic>
             <name>
-              ${names}
+              ${name}
             </name>
             ${telNums}
           </demographic>
@@ -64,8 +41,8 @@ export default function adapter(config) {
         /**
          * convertRapidProContactToCSD - convert a RapidPro contact into CSD
          *
-         * @param  {String} globalid the contact's globalid
-         * @param  {Array} contacts all RapidPro contacts that share the globalid
+         * @param  {String} global_id the contact's global_id
+         * @param  {Array} contact the RapidPro contact with the global_id
          * @return {String} the converted contact
          */
         convertRapidProContactToCSD: convertRapidProContactToCSD,
@@ -78,25 +55,26 @@ export default function adapter(config) {
          */
         getRapidProContactsAsCSDEntities: function (groupUUID, callback) {
             rapidpro.getContacts(false, true, groupUUID, (contacts) => {
-                let contactsMap = buildContactsByGlobalIDMap(contacts)
                 let converted = []
-                for (let k in contactsMap) {
-                    converted.push(convertRapidProContactToCSD(k, contactsMap[k]))
+                for (let UUID in contacts) {
+                    const contact = contacts[UUID]
+                    converted.push(convertRapidProContactToCSD(contact.fields.global_id, contact))
                 }
                 callback(null, converted)
             })
         },
 
         /**
-         * convertCSDToContact - converts a CSD provider into a rapidPro contact
+         * convertCSDToContact - converts a CSD provider into a RapidPro contact
          *
          * @param  {String} entity An CSD XML representation of the provider
-         * @return {Object}        A javascript object representing the RapidPro contact
+         * @return {Object}        A Javascript object representing the RapidPro contact
          */
         convertCSDToContact: function (entity) {
             entity = entity.replace(/\s\s+/g, '')
-            entity = entity.replace(/xmlns=\"(.*?)\"/g, '')
+            entity = entity.replace(/.xmlns.*?\"(.*?)\"/g, '')
             const doc = new Dom().parseFromString(entity)
+            const uuid = XPath.select('/provider/@entityID', doc)[0].value
             const name = XPath.select('/provider/demographic/name/commonName/text()', doc)[0].toString()
             const telNodes = XPath.select('/provider/demographic/contactPoint/codedType[@code="BP" and @codingScheme="urn:ihe:iti:csd:2013:contactPoint"]/text()', doc)
             let tels = []
@@ -109,7 +87,10 @@ export default function adapter(config) {
             }
             const data = {
                 name: name,
-                urns: tels
+                urns: tels,
+                fields: {
+                    global_id: uuid
+                }
             }
             return data
         }

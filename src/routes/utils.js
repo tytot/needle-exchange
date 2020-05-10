@@ -14,19 +14,11 @@ export const buildReturnObject = (
   openhimTransactionStatus,
   httpResponseStatusCode,
   responseBody,
-  req,
   orchs
 ) => {
-  console.log(orchs)
   return {
     'x-mediator-urn': urn,
     status: openhimTransactionStatus,
-    request: {
-      method: req.method,
-      headers: req.headers,
-      timestamp: req.timestamp,
-      path: req.path
-    },
     response: {
       status: httpResponseStatusCode,
       timestamp: new Date(),
@@ -47,7 +39,6 @@ export const buildOrchestration = (name, beforeTimestamp, method, url, requestCo
       timestamp: beforeTimestamp,
       path: uri.path(),
       querystring: uri.query()
-
     },
     response: {
       status: res.statusCode,

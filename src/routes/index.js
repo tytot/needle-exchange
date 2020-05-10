@@ -23,7 +23,7 @@ routes.all('*', (req, res) => {
     message: 'Combination not found',
     url: req.url,
     method: req.method
-  }, req, [])
+  }, [])
   res.status(404).send(returnObject)
 })
 module.exports = routes
