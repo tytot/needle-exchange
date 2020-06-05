@@ -43,7 +43,7 @@ export const buildOrchestration = (name, beforeTimestamp, method, url, requestCo
     response: {
       status: res.statusCode,
       headers: res.headers,
-      body: body,
+      body:"bruh",
       timestamp: new Date()
     }
   }

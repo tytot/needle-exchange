@@ -276,7 +276,8 @@ module.exports = (_req, res) => {
                     'Endpoint Response!',
                     orchestrations
                   )
-                  res.end(JSON.stringify(returnObject))
+                  res.set('Content-Type', 'application/json+openhim')
+                  res.send(returnObject)
                 })
               })
             })

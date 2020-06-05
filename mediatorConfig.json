@@ -5,7 +5,7 @@
   "description": "An interactive needle exchange system featuring OpenHIM, OpenInfoMan, and RapidPro",
   "defaultChannelConfig": [
     {
-      "name": "OpenInfoMan Update from RapidPro",
+      "name": "Update RapidPro from OpenInfoMan",
       "urlPattern": "^/openinfoman-rapidpro$",
       "pollingSchedule": "15 07,13 * * *",
       "status": "enabled",
@@ -28,7 +28,7 @@
       "type": "polling"
     },
     {
-      "name": "OpenInfoMan Update from HRIS",
+      "name": "Update OpenInfoMan from HRIS",
       "urlPattern": "^/openinfoman-hris$",
       "pollingSchedule": "00 07,13 * * *",
       "status": "enabled",
