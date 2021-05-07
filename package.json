@@ -14,7 +14,7 @@
     "pino": "^5.17.0",
     "pino-pretty": "^3.6.1",
     "request": "^2.88.0",
-    "underscore": "^1.10.2",
+    "underscore": "^1.12.1",
     "urijs": "^1.19.2",
     "xmldom": "^0.2.1",
     "xpath": "0.0.27"
