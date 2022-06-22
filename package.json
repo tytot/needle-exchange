@@ -4,7 +4,7 @@
   "description": "An interactive needle exchange system featuring OpenHIM, OpenInfoMan, and RapidPro",
   "dependencies": {
     "array-unique": "^0.3.2",
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
     "lodash": "^4.17.15",
